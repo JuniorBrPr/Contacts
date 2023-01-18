@@ -1,5 +1,7 @@
 package contacts.app;
 
+import contacts.app.objects.Contact;
+
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Scanner;
