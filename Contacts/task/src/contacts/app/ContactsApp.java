@@ -1,9 +1,9 @@
 package contacts.app;
 
 import contacts.app.objects.Contact;
+import contacts.app.objects.ContactManager;
 
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Scanner;
 
 /**
@@ -13,11 +13,14 @@ import java.util.Scanner;
  * @author Junior Javier Brito Perez
  */
 public class ContactsApp {
-    private static final String MENU = "Enter action (add, remove, edit, count, list, exit):";
-    private final ArrayList<Contact> contacts = new ArrayList<>();
-    private final Scanner in = new Scanner(System.in);
+    private final ArrayList<Contact> contacts;
+    private final Scanner in;
+    private final ContactManager contactManager;
 
     public ContactsApp() {
+        this.in = new Scanner(System.in);
+        this.contacts = new ArrayList<>();
+        this.contactManager = new ContactManager(in);
         menu();
     }
 
@@ -27,14 +30,15 @@ public class ContactsApp {
     private void menu() {
         //noinspection InfiniteLoopStatement
         do {
-            System.out.println(MENU);
+            String menu = "\nEnter action (add, remove, edit, count, info, exit):";
+            System.out.println(menu);
             String action = in.nextLine();
             switch (action) {
                 case "add" -> addContact();
                 case "remove" -> removeContact();
                 case "edit" -> editContact();
                 case "count" -> countContacts();
-                case "list" -> listContacts();
+                case "info" -> contactInfo();
                 case "exit" -> exit();
                 default -> {
                     System.out.println("Wrong action!");
@@ -64,30 +68,11 @@ public class ContactsApp {
                 editContact();
             }
             Contact contact = contacts.get(index - 1);
-            System.out.println("Select a field (name, surname, number):");
-            String field = in.nextLine();
-            switch (field) {
-                case "name" -> {
-                    System.out.println("Enter name:");
-                    contact.setName(in.nextLine());
-                }
-                case "surname" -> {
-                    System.out.println("Enter surname:");
-                    contact.setSurname(in.nextLine());
-                }
-                case "number" -> {
-                    System.out.println("Enter number:");
-                    contact.setPhoneNumber(in.nextLine());
-                }
-                default -> {
-                    System.out.println("Wrong field!");
-                    editContact();
-                }
-            }
-            System.out.println("The record updated!");
+            contactManager.editContact(contact);
         } else {
             System.out.println("No records to edit!");
         }
+
     }
 
     /**
@@ -105,15 +90,24 @@ public class ContactsApp {
             System.out.println("No records to list!");
         } else {
             for (int i = 0; i < contacts.size(); i++) {
-                String number = Objects.equals(contacts.get(i).getPhoneNumber(), "") ?
-                        "[no number]" :
-                        contacts.get(i).getPhoneNumber();
-                System.out.printf("%d. %s %s, %s \n",
-                        i + 1,
-                        contacts.get(i).getName(),
-                        contacts.get(i).getSurname(),
-                        number);
+                System.out.println((i + 1) + ". " + contacts.get(i).getName());
             }
+        }
+    }
+
+    private void contactInfo() {
+        if (!contacts.isEmpty()) {
+            listContacts();
+            System.out.println("Enter index to show info:");
+            int index = Integer.parseInt(in.nextLine());
+            if (index > contacts.size() || index < 1) {
+                System.out.println("Wrong index!");
+                contactInfo();
+            }
+            Contact contact = contacts.get(index - 1);
+            System.out.println(contact);
+        } else {
+            System.out.println("No records to list!");
         }
     }
 
@@ -143,14 +137,15 @@ public class ContactsApp {
      * Add a contact to the phone book.
      */
     private void addContact() {
-        Contact newContact = new Contact();
-        System.out.println("Enter the name:");
-        newContact.setName(in.nextLine());
-        System.out.println("Enter the surname:");
-        newContact.setSurname(in.nextLine());
-        System.out.println("Enter the number:\n");
-        newContact.setPhoneNumber(in.nextLine());
-        contacts.add(newContact);
-        System.out.println("The record added.");
+        System.out.println("Enter the type (person, organization):");
+        String type = in.nextLine();
+        Contact contact = contactManager.createContact(type);
+
+        if (contact != null) {
+            contacts.add(contact);
+            System.out.println("The record added.");
+        } else {
+            System.out.println("The record not added.");
+        }
     }
 }

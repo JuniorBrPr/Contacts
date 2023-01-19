@@ -24,8 +24,8 @@ public abstract class Contact {
         this.CREATED = LocalDateTime.now();
         this.lastEdited = LocalDateTime.now();
         this.NUMBER_PATTERN = Pattern.compile(
-                "^\\+?(\\([A-Za-z0-9]+\\)|[A-Za-z0-9]+)([ -]?([A-Za-z0-9]{2,}))*$|" +
-                        "^\\+?([A-Za-z0-9]{2,}[ -]?\\([A-Za-z0-9]{2,3}\\))([ -]?([A-Za-z0-9]{2,}))*$|" +
+                "^\\+?(\\([A-Za-z0-9]{2,}+\\)|[A-Za-z0-9]{2,}+)([ -]?([A-Za-z0-9]{2,}))*$|" +
+                        "^\\+?([A-Za-z0-9]+[ -]?\\([A-Za-z0-9]{2,3}\\))([ -]?([A-Za-z0-9]{2,}))*$|" +
                         "^\\([A-Za-z0-9]{2,}\\)$|" +
                         "^\\d$");
     }
@@ -47,17 +47,11 @@ public abstract class Contact {
         return this.NUMBER_PATTERN.matcher(phoneNumber).matches();
     }
 
-    LocalDateTime getCreated() {
-        return this.CREATED;
-    }
-
-    LocalDateTime getLastEdited() {
-        return this.lastEdited;
-    }
-
     void setLastEdited() {
         this.lastEdited = LocalDateTime.now();
     }
+
+    public abstract String getName();
 }
 
 class Person extends Contact {
@@ -107,6 +101,15 @@ class Person extends Contact {
         setLastEdited();
     }
 
+    enum Gender {
+        M, F
+    }
+
+    @Override
+    public String getName() {
+        return this.firstname + " " + this.surname;
+    }
+
     @Override
     public String toString() {
         String number = Objects.equals(this.getPhoneNumber(), "") ? "[no number]" : getPhoneNumber();
@@ -130,10 +133,6 @@ class Person extends Contact {
                 this.lastEdited
         );
     }
-
-    enum Gender {
-        M, F
-    }
 }
 
 class Organization extends Contact {
@@ -153,6 +152,11 @@ class Organization extends Contact {
     protected void setAddress(String address) {
         this.address = address;
         setLastEdited();
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
     }
 
     @Override
