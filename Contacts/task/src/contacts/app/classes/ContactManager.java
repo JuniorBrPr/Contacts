@@ -1,7 +1,10 @@
-package contacts.app.objects;
+package contacts.app.classes;
 
 import java.util.Scanner;
 
+/**
+ * This class handles the creation and editing of contacts.
+ */
 public class ContactManager {
     private final Scanner in;
 
@@ -9,6 +12,9 @@ public class ContactManager {
         this.in = in;
     }
 
+    /**
+     * @param contact Contact to be edited.
+     */
     public void editContact(Contact contact){
         if (contact instanceof Person) {
             editPerson((Person) contact);
@@ -17,6 +23,12 @@ public class ContactManager {
         }
     }
 
+    /**
+     * Create a new contact.
+     *
+     * @param type Type of contact to be created.
+     * @return Contact created.
+     */
     public Contact createContact(String type) {
         return switch (type) {
             case "person" -> createPerson();
@@ -28,10 +40,19 @@ public class ContactManager {
         };
     }
 
+    /**
+     * Edit an organization's contact details.
+     *
+     * @param contact Organization contact to be edited.
+     */
     private void editOrganization(Organization contact) {
-        System.out.println("Select a field (address, number):");
+        System.out.println("Select a field (name, address, number):");
         String field = in.nextLine();
         switch (field) {
+            case "name" -> {
+                System.out.println("Enter name:");
+                contact.setName(in.nextLine());
+            }
             case "address" -> {
                 System.out.println("Enter address:");
                 contact.setAddress(in.nextLine());
@@ -48,6 +69,11 @@ public class ContactManager {
         System.out.println("The record updated!");
     }
 
+    /**
+     * Edit a person's contact details.
+     *
+     * @param contact Person contact to be edited.
+     */
     private void editPerson(Person contact) {
         System.out.println("Select a field (name, surname, birth, gender, number):");
         String field = in.nextLine();
@@ -61,7 +87,7 @@ public class ContactManager {
                 contact.setSurname(in.nextLine());
             }
             case "birth" -> {
-                System.out.println("Enter birth date (YYYY-MM-DD):");
+                System.out.println("Enter birthdate (YYYY-MM-DD):");
                 contact.setBirthDate(in.nextLine());
             }
             case "gender" -> {
@@ -80,6 +106,11 @@ public class ContactManager {
         System.out.println("The record updated!");
     }
 
+    /**
+     * Create a new person contact.
+     *
+     * @return Person contact created.
+     */
     private Contact createPerson() {
         Person person = new Person();
 
@@ -87,7 +118,7 @@ public class ContactManager {
         person.setFirstname(in.nextLine());
         System.out.println("Enter the surname:");
         person.setSurname(in.nextLine());
-        System.out.println("Enter the birth date:");
+        System.out.println("Enter birthdate (YYYY-MM-DD):");
         person.setBirthDate(in.nextLine());
         System.out.println("Enter the gender (M, F):");
         person.setGender(in.nextLine());
@@ -97,6 +128,11 @@ public class ContactManager {
         return person;
     }
 
+    /**
+     * Create a new organization contact.
+     *
+     * @return Organization contact created.
+     */
     private Contact createOrganization() {
         Organization organization = new Organization();
 
