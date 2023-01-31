@@ -7,6 +7,9 @@ import java.util.Scanner;
  */
 public class ContactManager {
     private final Scanner in;
+    public enum ContactType {
+        PERSON, ORGANIZATION
+    }
 
     public ContactManager(Scanner in) {
         this.in = in;
@@ -29,14 +32,10 @@ public class ContactManager {
      * @param type Type of contact to be created.
      * @return Contact created.
      */
-    public Contact createContact(String type) {
+    public Contact createContact(ContactType type) {
         return switch (type) {
-            case "person" -> createPerson();
-            case "organization" -> createOrganization();
-            default -> {
-                System.out.println("Wrong type!");
-                yield null;
-            }
+            case PERSON -> createPerson();
+            case ORGANIZATION -> createOrganization();
         };
     }
 
@@ -145,4 +144,5 @@ public class ContactManager {
 
         return organization;
     }
+
 }

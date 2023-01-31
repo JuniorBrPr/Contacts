@@ -12,12 +12,11 @@ public class Person extends Contact {
     private String firstname;
     private String surname;
     private LocalDate birthDate;
-    private Gender gender;
+    private String gender;
 
     Person() {
         super();
         this.birthDate = null;
-        this.gender = null;
     }
 
     /**
@@ -57,21 +56,14 @@ public class Person extends Contact {
      */
     protected void setGender(String gender) {
         if (Objects.equals(gender, "M")) {
-            this.gender = Gender.M;
+            this.gender = gender;
         } else if (Objects.equals(gender, "F")) {
-            this.gender = Gender.F;
+            this.gender = gender;
         } else {
-            System.out.println("Bad gender!");
+            System.out.println("Invalid gender!");
             this.gender = null;
         }
         setLastEdited();
-    }
-
-    /**
-     * Gender enum for the person.
-     */
-    enum Gender {
-        M, F
     }
 
     /**
@@ -89,7 +81,7 @@ public class Person extends Contact {
     public String toString() {
         String number = Objects.equals(this.getPhoneNumber(), "") ? "[no number]" : getPhoneNumber();
         String birthDate = this.birthDate == null ? "[no data]" : this.birthDate.toString();
-        String gender = this.gender == null ? "[no data]" : this.gender.toString();
+        String gender = this.gender == null ? "[no data]" : this.gender;
         return """
                 Name: %s
                 Surname: %s

@@ -7,10 +7,9 @@ import java.util.regex.Pattern;
 /**
  * This class represents a contact.
  * It contains the fields that are common to all contacts.
- *
- * @author Junior Javier Brito Perez
  */
 public abstract class Contact implements Serializable {
+    private final long serialVersionUID = 1L;
     String phoneNumber;
     final LocalDateTime CREATED;
     LocalDateTime lastEdited;
@@ -31,7 +30,7 @@ public abstract class Contact implements Serializable {
      * @return the phone number of the contact.
      */
     public String getPhoneNumber() {
-        return phoneNumber;
+        return this.phoneNumber;
     }
 
     /**

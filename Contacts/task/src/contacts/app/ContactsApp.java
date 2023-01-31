@@ -2,6 +2,7 @@ package contacts.app;
 
 import contacts.app.classes.Contact;
 import contacts.app.classes.ContactManager;
+import contacts.app.classes.ContactManager.ContactType;
 import contacts.app.classes.SerializationUtils;
 
 import java.util.ArrayList;
@@ -54,6 +55,7 @@ public class ContactsApp {
      * Exit the program.
      */
     private void exit() {
+        saveData();
         System.exit(0);
     }
 
@@ -68,7 +70,6 @@ public class ContactsApp {
         } else {
             System.out.println("No records to edit!");
         }
-
     }
 
     /**
@@ -128,6 +129,7 @@ public class ContactsApp {
         if (!contacts.isEmpty()) {
             if (contacts.remove(index) != null) {
                 System.out.println("The record removed!");
+                saveData();
             } else {
                 System.out.println("The record not removed!");
             }
@@ -142,14 +144,25 @@ public class ContactsApp {
     private void addContact() {
         System.out.println("Enter the type (person, organization):");
         String type = in.nextLine();
-        Contact contact = contactManager.createContact(type);
-
+        Contact contact = null;
+        if (type.equals("person")) {
+            contact = contactManager.createContact(
+                    ContactType.PERSON
+            );
+        }
+        if (type.equals("organization")) {
+            contact = contactManager.createContact(
+                    ContactType.ORGANIZATION
+            );
+        }
+        if (contact == null) {
+            System.out.println("Wrong type!");
+            addContact();
+        }
         if (contact != null) {
             contacts.add(contact);
-            saveData();
             System.out.println("The record added.");
-        } else {
-            System.out.println("The record not added.");
+            saveData();
         }
     }
 
@@ -231,11 +244,13 @@ public class ContactsApp {
      * @return List of contacts from file.
      */
     private ArrayList<Contact> loadData() {
+        ArrayList<Contact> contacts = new ArrayList<>();
         try {
-            return (ArrayList<Contact>) SerializationUtils.deserialize(this.fileName);
+            contacts = (ArrayList<Contact>) SerializationUtils.deserialize(this.fileName);
+            return contacts;
         } catch (Exception e) {
             System.out.println("Error loading data! " + e.getMessage());
         }
-        return new ArrayList<>();
+        return contacts;
     }
 }
