@@ -43,10 +43,7 @@ public class ContactsApp {
                 case "search" -> searchContacts();
                 case "list" -> contactInfo();
                 case "exit" -> exit();
-                default -> {
-                    System.out.println("Wrong action!");
-                    menu();
-                }
+                default -> System.out.println("Wrong action!");
             }
         } while (true);
     }
